@@ -1,0 +1,14 @@
+#This is an example hostfile
+
+#comments start with #
+
+#This is a single processor machine
+node0
+
+#This is a two-processor machine
+node1 slots=2
+
+#This machine can run up to 2 processes
+
+node2 slots=2 maxSlots=2
+node3 slots=5 maxSlots=20
