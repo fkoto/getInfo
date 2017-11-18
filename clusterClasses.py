@@ -11,6 +11,7 @@ class Slot:
     def __init__(self, Id=None, **kwargs):
         #print 'creating slots. id=' + str(Id)
         #print 'kwargs:{' + str(kwargs) + '}'
+        self.generator = None
         if Id is None:
             self.id = ''
         else:
@@ -28,15 +29,11 @@ class Slot:
             for core in self.cores:
                 yield core
 
-    def getNextAvailableCore(self):
-        try:
-            for cor in self.createCoreGenerator():
-                return cor
-        except StopIteration:
-            return None
 
 class Node:
     def __init__(self, Id=None, **kwargs):
+        self.generator = None
+        self.curSlot = None
         if Id is None:
             self.id = ''
         else:
@@ -59,12 +56,6 @@ class Node:
             for slot in self.slots:
                 yield slot
 
-    def getNextAvailableSlot(self):
-        try:
-            for sl in self.createSlotGenerator():
-                return sl
-        except StopIteration:
-            return None
 
 class Cluster:
     def __init__(self):

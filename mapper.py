@@ -3,12 +3,65 @@ class Mapper:
         self.mode = mode
 
     def doMappingNode(self, cluster, numOfProcs, ppr):
+        res = []
+        i = 0
+        while True:
+            for nod in cluster.createNodeGenerator():
+                try:
+                    if nod.generator is None:
+                        #first pass from node
+                        nod.generator = nod.createSlotGenerator()
+                        nod.curSlot = nod.generator.next()
 
+                    if nod.curSlot.generator is None:
+                        #first pass from slot
+                        nod.curSlot.generator = nod.curSlot.createCoreGenerator()
 
-        return []
+                    #get next core
+                    while True:
+                        coreId = ''
+                        try:
+                            coreId = nod.curSlot.generator.next()
+                        except StopIteration:
+                            print 'Slot ' + str(nod.curSlot.id) + ' of node ' + nod.id + ' exhausted. Moving on'
+
+                        if coreId == '':
+                                nod.curSlot = nod.generator.next()
+                                if nod.curSlot.generator is None:
+                                    nod.curSlot.generator = nod.curSlot.createCoreGenerator()
+
+                        else:
+                            break
+
+                    if len(res) < numOfProcs:
+                        res.append(coreId.id)
+                    else:
+                        return res
+
+                except StopIteration:
+                    print 'Node ' + nod.id + ' out of slots. Moving on'
+                    continue
 
     def doMappingSlot(self, cluster, numOfProcs, ppr):
-        return []
+        res = []
+        while True:
+            for nod in cluster.createNodeGenerator():
+                for sl in nod.createSlotGenerator():
+                    if sl.generator is None:
+                        #first pass
+                        sl.generator = sl.createCoreGenerator()
+
+                    try:
+                        coreId = sl.generator.next()
+                        #print coreId.id
+                        if len(res) < numOfProcs:
+                            res.append(coreId.id)
+                        else:
+                            return res
+                    except StopIteration:
+                        print 'Slot ' + str(sl.id) + 'of node ' + nod.id + ' exhausted. Moving on.'
+
+
 
     def doMappingCore(self, cluster, numOfProcs):
         res = []
