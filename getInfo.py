@@ -68,8 +68,14 @@ else:
         nod = clusterClasses.Node('node' + str(i), numOfSlots=numOfSlots, numOfCoresPerSlot=args.cores)
         myCluster.nodes.append(nod)
 
+#myCluster.printClusterDetails() # print num of components per node
+myCluster.printClusterDetails(True) # print all ids of cluster
 
-myCluster.printClusterDetails()
+if args.nooversubscribe:
+    print 'No oversubscription requested!'
+    if (args.procs > myCluster.countClusterResources()):
+        print ('Cluster cannot handle that many processes! (disable no-oversubscription flag)')
+        exit()
 
 #Get mapping and ranking parameters
 if args.bynode is True:

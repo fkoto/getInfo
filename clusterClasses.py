@@ -99,14 +99,22 @@ class Cluster:
 
             #print('ignored:' + str(cnt) + ' lines!')
 
-    def printClusterDetails(self):
+    def printClusterDetails(self, withIds = False):
         print("\n########SIMULATION ENV#############")
-        for nod in self.nodes:
-            print 'Node id=' + str(nod.id)
-            slots = len(nod.slots)
-            print 'slots=' + str(slots)
-            cores = sum(len(i.cores) for i in nod.slots)
-            print 'cores=' + str(cores) + '\n'
+        if not withIds:
+            for nod in self.nodes:
+                print 'Node id=' + str(nod.id)
+                slots = len(nod.slots)
+                print 'slots=' + str(slots)
+                cores = sum(len(i.cores) for i in nod.slots)
+                print 'cores=' + str(cores) + '\n'
+        else:
+            for nod in self.nodes:
+                print 'Node id=' + str(nod.id)
+                for sl in nod.slots:
+                    print 'Slot id=' + str(sl.id)
+                    for c in sl.cores:
+                        print 'Core id=' + str(c.id)
         print("###################################\n")
 
     def createNodeGenerator(self):
@@ -119,3 +127,11 @@ class Cluster:
                 return nod
         except StopIteration:
             return None
+
+    def countClusterResources(self):
+        resources = 0
+        for nod in self.nodes:
+            for sl in nod.slots:
+                for c in sl.cores:
+                    resources +=1
+        return resources
