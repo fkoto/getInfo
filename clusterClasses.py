@@ -100,13 +100,14 @@ class Cluster:
             #print('ignored:' + str(cnt) + ' lines!')
 
     def printClusterDetails(self):
-        print self.nodes
+        print("\n########SIMULATION ENV#############")
         for nod in self.nodes:
             print 'Node id=' + str(nod.id)
             slots = len(nod.slots)
             print 'slots=' + str(slots)
             cores = sum(len(i.cores) for i in nod.slots)
             print 'cores=' + str(cores) + '\n'
+        print("###################################\n")
 
     def createNodeGenerator(self):
             for node in self.nodes:

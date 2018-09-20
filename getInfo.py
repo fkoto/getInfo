@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sorter
 import mapper
 import clusterClasses
@@ -64,7 +66,10 @@ else:
 
     for i in range(numOfNodes):
         nod = clusterClasses.Node('node' + str(i), numOfSlots=numOfSlots, numOfCoresPerSlot=args.cores)
+        myCluster.nodes.append(nod)
 
+
+myCluster.printClusterDetails()
 
 #Get mapping and ranking parameters
 if args.bynode is True:
@@ -94,6 +99,8 @@ print 'Initiating ' + str(args.procs) + ' processes'
 mapIds = myMapper.doMapping(myCluster, args.procs, ppr)
 
 finalIds = myRanker.compare(mapIds)
+
+args.outfile.write("\n##########OUTPUT##############\n")
 
 cnt = 0
 for el in finalIds:
