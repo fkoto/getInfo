@@ -5,8 +5,9 @@ class Sorter:
     method that takes as input a list of core ids that will be used
     and returns a list containing these ids in the order the assignment
     will take place."""
-    def __init__(self, mode):
+    def __init__(self, mode, printer):
         self.mode = mode
+        self.printer = printer
 
     def compare(self, lst):
         if self.mode == 'core':
@@ -17,13 +18,13 @@ class Sorter:
             return self.compareByNode(lst)
 
     def compareByCore(self, lst):
-        print 'CompareByCore invoked.'
+        self.printer.doprint('CompareByCore invoked.')
         return sorted(lst, key=lambda x:(x.split(':')[2], x.split(':')[1], x.split(':')[0]))
 
     def compareBySlot(self, lst):
-        print 'CompareBySlot invoked.'
+        self.printer.doprint('CompareBySlot invoked.')
         return sorted(lst, key=lambda x:(x.split(':')[0], x.split(':')[2], x.split(':')[1]))
 
     def compareByNode(self, lst):
-        print 'CompareByNode invoked.'
+        self.printer.doprint('CompareByNode invoked.')
         return sorted(lst, key=lambda x:(x.split(':')[1], x.split(':')[0], x.split(':')[2]))

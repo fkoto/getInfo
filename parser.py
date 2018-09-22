@@ -20,6 +20,7 @@ class Parser():
         self.parser.add_argument('-rf', '--rankfile', type=argparse.FileType('r'), help='Provide a ranking file')
         self.parser.add_argument('-o', '--outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout,
                                  help='Where final result will be printed. (default: stdout)')
+        self.parser.add_argument('-v', '--verbose', action='store_true', help='Verbose mode.')
         self.parser.add_argument('args', nargs=argparse.REMAINDER)  # gather rest of items in a list
 
     def getParser(self):

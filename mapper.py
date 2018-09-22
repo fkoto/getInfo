@@ -1,6 +1,7 @@
 class Mapper:
-    def __init__(self, mode):
+    def __init__(self, mode, printer):
         self.mode = mode
+        self.printer = printer
 
     def doMappingNode(self, cluster, numOfProcs, ppr):
         res = []
@@ -23,7 +24,8 @@ class Mapper:
                         try:
                             coreId = nod.curSlot.generator.next()
                         except StopIteration:
-                            print 'Slot ' + str(nod.curSlot.id) + ' of node ' + nod.id + ' exhausted. Moving on'
+                            self.printer.doprint('Slot ' + str(nod.curSlot.id) + ' of node ' + nod.id + ' exhausted. Moving on')
+                            nod.curSlot.generator = None
 
                         if coreId == '':
                                 nod.curSlot = nod.generator.next()
@@ -39,7 +41,8 @@ class Mapper:
                         return res
 
                 except StopIteration:
-                    print 'Node ' + nod.id + ' out of slots. Moving on'
+                    self.printer.doprint('Node ' + nod.id + ' out of slots. Moving on')
+                    nod.generator = None
                     continue
 
     def doMappingSlot(self, cluster, numOfProcs, ppr):
@@ -59,7 +62,7 @@ class Mapper:
                         else:
                             return res
                     except StopIteration:
-                        print 'Slot ' + str(sl.id) + 'of node ' + nod.id + ' exhausted. Moving on.'
+                        self.printer.doprint('Slot ' + str(sl.id) + 'of node ' + nod.id + ' exhausted. Moving on.')
 
 
 

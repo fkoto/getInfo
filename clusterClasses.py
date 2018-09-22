@@ -58,8 +58,9 @@ class Node:
 
 
 class Cluster:
-    def __init__(self):
+    def __init__(self, printer):
         self.nodes = []
+        self.printer = printer
 
     def getNodesFromHostFile(self, inputFile, numOfCoresPerSlot=1):
         cnt = 0
@@ -100,22 +101,22 @@ class Cluster:
             #print('ignored:' + str(cnt) + ' lines!')
 
     def printClusterDetails(self, withIds = False):
-        print("\n########SIMULATION ENV#############")
+        self.printer.doprint("\n########SIMULATION ENV#############", withIds)
         if not withIds:
             for nod in self.nodes:
-                print 'Node id=' + str(nod.id)
+                self.printer.doprint('Node id=' + str(nod.id))
                 slots = len(nod.slots)
-                print 'slots=' + str(slots)
+                self.printer.doprint('slots=' + str(slots))
                 cores = sum(len(i.cores) for i in nod.slots)
-                print 'cores=' + str(cores) + '\n'
+                self.printer.doprint('cores=' + str(cores) + '\n')
         else:
             for nod in self.nodes:
-                print 'Node id=' + str(nod.id)
+                self.printer.doprint('Node id=' + str(nod.id), True)
                 for sl in nod.slots:
-                    print 'Slot id=' + str(sl.id)
+                    self.printer.doprint('\tSlot id=' + str(sl.id), True)
                     for c in sl.cores:
-                        print 'Core id=' + str(c.id)
-        print("###################################\n")
+                        self.printer.doprint('\t\tCore id=' + str(c.id), True)
+        self.printer.doprint("###################################\n", withIds)
 
     def createNodeGenerator(self):
             for node in self.nodes:

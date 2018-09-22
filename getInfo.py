@@ -4,10 +4,12 @@ import sorter
 import mapper
 import clusterClasses
 import parser
+import Printer
 import sys
 
 parser = parser.Parser()
 myParser = parser.getParser()
+
 
 args = myParser.parse_args()
 
@@ -17,17 +19,18 @@ if len(sys.argv) == 1:
 else:
     print args
 
+printer = Printer.Printer(args.verbose)
 
 if args.rankfile is not None:
     print 'rank file mode is not yet functional! Exiting'
     exit(1)
 
 if args.host is not None:
-    print 'host arg is specified!'
+    printer.doprint('host arg is specified!')
     temp1 = []
     temp2 = []
     for el in args.host:
-        if (',' in el):
+        if ',' in el:
             temp1.extend(el.split(','))
         else:
             temp2.append(el)
@@ -36,22 +39,22 @@ if args.host is not None:
     args.host.extend(temp1)
 
 #get cluster parameters
-myCluster = clusterClasses.Cluster()
+myCluster = clusterClasses.Cluster(printer)
 
 if args.hostfile is not None:
-    print 'hostfile is specified!'
+    printer.doprint('hostfile is specified!')
     myCluster.getNodesFromHostFile(args.hostfile, args.cores)
     myCluster.printClusterDetails()
 
     if args.host is not None:
-        print 'also host is specified!'
+        printer.doprint('also host is specified!')
         ind = []
         for el in myCluster.nodes:
             if el.id in args.host:
                 ind.append(el)
 
         myCluster.nodes = ind
-        print 'final cluster'
+        printer.doprint( 'final cluster')
         myCluster.printClusterDetails()
 elif args.hostfile is None and args.host is not None:
     numOfSlots = input('Please specify number of slots on each host:')
@@ -72,20 +75,21 @@ else:
 myCluster.printClusterDetails(True) # print all ids of cluster
 
 if args.nooversubscribe:
-    print 'No oversubscription requested!'
+    if verboseMode:
+        print 'No oversubscription requested!'
     if (args.procs > myCluster.countClusterResources()):
         print ('Cluster cannot handle that many processes! (disable no-oversubscription flag)')
         exit()
 
 #Get mapping and ranking parameters
 if args.bynode is True:
-    print 'By node!'
+    printer.doprint('By node!')
     mapmode = 'node'
     rankmode = 'node'
     ppr = 1
 else:
-    print 'map-by ' + args.map_by
-    print 'rank-by ' + args.rank_by
+    printer.doprint('map-by ' + args.map_by)
+    printer.doprint('rank-by ' + args.rank_by)
 
     if ':' in args.map_by:
         split = args.map_by.split(':')
@@ -98,10 +102,10 @@ else:
     rankmode = args.rank_by
 
 
-myMapper = mapper.Mapper(mapmode)
-myRanker = sorter.Sorter(rankmode)
+myMapper = mapper.Mapper(mapmode, printer)
+myRanker = sorter.Sorter(rankmode, printer)
 
-print 'Initiating ' + str(args.procs) + ' processes'
+printer.doprint('Initiating ' + str(args.procs) + ' processes')
 mapIds = myMapper.doMapping(myCluster, args.procs, ppr)
 
 finalIds = myRanker.compare(mapIds)
@@ -110,6 +114,6 @@ args.outfile.write("\n##########OUTPUT##############\n")
 
 cnt = 0
 for el in finalIds:
-    args.outfile.write(str(cnt) + ' ' + el +'\n')
+    args.outfile.write(str(cnt) + ' ' + el + '\n')
     cnt += 1
 
