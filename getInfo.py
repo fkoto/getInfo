@@ -13,13 +13,13 @@ myParser = parser.getParser()
 
 args = myParser.parse_args()
 
+printer = Printer.Printer(args.verbose)
+
 if len(sys.argv) == 1:
     print myParser.print_help()
     exit(1)
 else:
-    print args
-
-printer = Printer.Printer(args.verbose)
+    printer.doprint(args)
 
 if args.rankfile is not None:
     print 'rank file mode is not yet functional! Exiting'
@@ -53,6 +53,10 @@ if args.hostfile is not None:
             if el.id in args.host:
                 ind.append(el)
 
+        if not ind: # if no host matches the ones in hostfile
+            print('No valid hosts found. Aborting.')
+            exit()
+
         myCluster.nodes = ind
         printer.doprint( 'final cluster')
         myCluster.printClusterDetails()
@@ -75,7 +79,7 @@ else:
 myCluster.printClusterDetails(True) # print all ids of cluster
 
 if args.nooversubscribe:
-    if verboseMode:
+    if args.verbose:
         print 'No oversubscription requested!'
     if (args.procs > myCluster.countClusterResources()):
         print ('Cluster cannot handle that many processes! (disable no-oversubscription flag)')
@@ -107,6 +111,8 @@ myRanker = sorter.Sorter(rankmode, printer)
 
 printer.doprint('Initiating ' + str(args.procs) + ' processes')
 mapIds = myMapper.doMapping(myCluster, args.procs, ppr)
+
+print(mapIds)
 
 finalIds = myRanker.compare(mapIds)
 
