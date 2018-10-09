@@ -6,7 +6,7 @@
 node0
 
 #This is a two-processor machine
-node1 slots=2
+node1 slots=2 #cores=3 # this takes a custom cores arg only for getInfo
 
 #This machine can run up to 2 processes
 

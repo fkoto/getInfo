@@ -71,6 +71,14 @@ class Cluster:
                 cnt += 1
                 continue  # ignore comments and empty lines
 
+            numOfCores = 0
+            if '#cores=' in line: #get custom arg of num of cores
+                parts = line.split('#cores=')
+                line = parts[0].strip()
+                # print('line after removing #cores: ' + line)
+                numOfCores = parts[1].strip().split()[0]
+                # print('Read ' + numOfCores + ' as numOfCores')
+
             line = line.split('#')[0]  # ignore inline comments
             #print (line + ' (after removing comments)')
             splitted = line.split()
@@ -80,17 +88,26 @@ class Cluster:
 
             # a multicore node
             if ' slots=' in line:
-                node.setSlots(int(splitted[1].split('=')[-1]), numOfCoresPerSlot)
+                if numOfCores == 0:
+                    node.setSlots(int(splitted[1].split('=')[-1]), numOfCoresPerSlot)
+                else:
+                    node.setSlots(int(splitted[1].split('=')[-1]), int(numOfCores))
 
             # maxSlots are defined
             if 'max-slots=' in line:
                 node.maxSlots = int(splitted[-1].split('=')[-1])
                 if len(node.slots) == 0:
-                    node.setSlots(node.maxSlots, numOfCoresPerSlot)
+                    if numOfCores == 0:
+                        node.setSlots(node.maxSlots, numOfCoresPerSlot)
+                    else:
+                        node.setSlots(node.maxSlots, int(numOfCores))
 
             # a single core node (neither 'slots' nor 'max-slots' is defined)
             if 'slots' not in line:
-                node.setSlots(1, 1)
+                if numOfCores == 0:
+                    node.setSlots(1, numOfCoresPerSlot)
+                else:
+                    node.setSlots(1, int(numOfCores))
 
             # add to cluster
             #print(node.id)
