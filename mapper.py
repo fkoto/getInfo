@@ -19,26 +19,28 @@ class Mapper:
                         nod.curSlot.generator = nod.curSlot.createCoreGenerator()
 
                     #get next core
-                    while True:
-                        coreId = ''
-                        try:
-                            coreId = nod.curSlot.generator.next()
-                        except StopIteration:
-                            self.printer.doprint('Slot ' + str(nod.curSlot.id) + ' of node ' + nod.id + ' exhausted. Moving on')
-                            nod.curSlot.generator = None
+                    for iter_ppr in range(int(ppr)):
+                        #self.printer.doprint(nod.id + ' in iter ' + str(iter_ppr) + ' of ' + str(ppr))
+                        while True:
+                            coreId = ''
+                            try:
+                                coreId = nod.curSlot.generator.next()
+                            except StopIteration:
+                                self.printer.doprint('Slot ' + str(nod.curSlot.id) + ' of node ' + nod.id + ' exhausted. Moving on')
+                                nod.curSlot.generator = None
 
-                        if coreId == '':
-                                nod.curSlot = nod.generator.next()
-                                if nod.curSlot.generator is None:
-                                    nod.curSlot.generator = nod.curSlot.createCoreGenerator()
+                            if coreId == '':
+                                    nod.curSlot = nod.generator.next()
+                                    if nod.curSlot.generator is None:
+                                        nod.curSlot.generator = nod.curSlot.createCoreGenerator()
 
+                            else:
+                                break
+
+                        if len(res) < numOfProcs:
+                            res.append(coreId.id)
                         else:
-                            break
-
-                    if len(res) < numOfProcs:
-                        res.append(coreId.id)
-                    else:
-                        return res
+                            return res
 
                 except StopIteration:
                     self.printer.doprint('Node ' + nod.id + ' out of slots. Moving on')
@@ -54,15 +56,18 @@ class Mapper:
                         #first pass
                         sl.generator = sl.createCoreGenerator()
 
-                    try:
-                        coreId = sl.generator.next()
-                        #print coreId.id
-                        if len(res) < numOfProcs:
-                            res.append(coreId.id)
-                        else:
-                            return res
-                    except StopIteration:
-                        self.printer.doprint('Slot ' + str(sl.id) + 'of node ' + nod.id + ' exhausted. Moving on.')
+                    for iter_ppr in range(int(ppr)):
+                        try:
+                            coreId = sl.generator.next()
+                            #print coreId.id
+                            if len(res) < numOfProcs:
+                                res.append(coreId.id)
+                            else:
+                                return res
+                        except StopIteration:
+                            self.printer.doprint('Slot ' + str(sl.id) + 'of node ' + nod.id + ' exhausted. Moving on.')
+                            sl.generator = None
+                            break
 
 
 
