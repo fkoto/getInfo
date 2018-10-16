@@ -19,12 +19,51 @@ class Sorter:
 
     def compareByCore(self, lst):
         self.printer.doprint('CompareByCore invoked.')
-        return sorted(lst, key=lambda x:(x.split(':')[2], x.split(':')[1], x.split(':')[0]))
+        normalLst = []
+        overLst = []
+        for el in lst:
+            if 'o' in el[:1]:
+                overLst.append(el)
+            else:
+                normalLst.append(el)
+
+        snormalLst = sorted(normalLst, key=lambda x: (x.split(':')[2], x.split(':')[1], x.split(':')[0]))
+        soverLst = sorted(overLst, key=lambda x: (x.split(':')[2], x.split(':')[1], x.split(':')[0]))
+
+        result = snormalLst + soverLst
+        return result
 
     def compareBySlot(self, lst):
         self.printer.doprint('CompareBySlot invoked.')
-        return sorted(lst, key=lambda x:(x.split(':')[0], x.split(':')[2], x.split(':')[1]))
+        normalLst = []
+        overLst = []
+
+        for el in lst:
+            if 'o' in el[:1]:
+                overLst.append(el)
+            else:
+                normalLst.append(el)
+
+        snormalLst = sorted(normalLst, key=lambda x: (x.split(':')[0], x.split(':')[2], x.split(':')[1]))
+        soverLst = sorted(overLst, key=lambda x: (x.split(':')[0], x.split(':')[2], x.split(':')[1]))
+
+        result = snormalLst + soverLst
+        return result
 
     def compareByNode(self, lst):
         self.printer.doprint('CompareByNode invoked.')
-        return sorted(lst, key=lambda x:(x.split(':')[1], x.split(':')[0], x.split(':')[2]))
+
+        normalLst = []
+        overLst = []
+
+        for el in lst:
+            if 'o' in el[:1]:
+                overLst.append(el)
+            else:
+                normalLst.append(el)
+
+        snormalLst = sorted(normalLst, key=lambda x: (x.split(':')[1], x.split(':')[0], x.split(':')[2]))
+        soverLst = sorted(overLst, key=lambda x: (x.split(':')[1], x.split(':')[0], x.split(':')[2]))
+
+        result = snormalLst + soverLst
+        return result
