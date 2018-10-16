@@ -12,6 +12,7 @@ class Slot:
         #print 'creating slots. id=' + str(Id)
         #print 'kwargs:{' + str(kwargs) + '}'
         self.generator = None
+        self.exhausted = False
         if Id is None:
             self.id = ''
         else:
@@ -34,6 +35,7 @@ class Node:
     def __init__(self, Id=None, **kwargs):
         self.generator = None
         self.curSlot = None
+        self.exhausted = False
         if Id is None:
             self.id = ''
         else:
