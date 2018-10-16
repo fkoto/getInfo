@@ -58,7 +58,7 @@ if args.hostfile is not None:
             exit()
 
         myCluster.nodes = ind
-        printer.doprint( 'final cluster')
+        printer.doprint('final cluster')
         myCluster.printClusterDetails()
 elif args.hostfile is None and args.host is not None:
     numOfSlots = input('Please specify number of slots on each host:')
@@ -79,13 +79,12 @@ else:
 myCluster.printClusterDetails(True) # print all ids of cluster
 
 if args.nooversubscribe:
-    if args.verbose:
-        print 'No oversubscription requested!'
-    if (args.procs > myCluster.countClusterResources()):
-        print ('Cluster cannot handle that many processes! (disable no-oversubscription flag)')
+    printer.doprint('No oversubscription requested!')
+    if args.procs > myCluster.countClusterResources():
+        printer.doprint('Cluster cannot handle that many processes! (disable no-oversubscription flag)', True)
         exit()
 
-#Get mapping and ranking parameters
+# Get mapping and ranking parameters
 if args.bynode is True:
     printer.doprint('By node!')
     mapmode = 'node'

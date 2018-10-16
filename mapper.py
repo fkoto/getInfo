@@ -56,7 +56,6 @@ class Mapper:
                     exhaustionFlag=False
                     break
             if exhaustionFlag:
-                print("All nodes exhausted!")
                 break
 
         while True:  # repeat for oversubscription
