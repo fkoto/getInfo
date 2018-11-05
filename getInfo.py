@@ -6,6 +6,7 @@ import clusterClasses
 import parser
 import Printer
 import sys
+import RankFiler
 
 parser = parser.Parser()
 myParser = parser.getParser()
@@ -22,8 +23,11 @@ else:
     printer.doprint(args)
 
 if args.rankfile is not None:
-    print 'rank file mode is not yet functional! Exiting'
-    exit(1)
+    rankfiler = RankFiler.RankFiler(args.rankfile, args.outfile)
+    rankfiler.parseRankFile()
+    exit()
+    #print 'rank file mode is not yet functional! Exiting'
+    #exit(1)
 
 if args.host is not None:
     printer.doprint('host arg is specified!')
@@ -75,8 +79,8 @@ else:
         nod = clusterClasses.Node('node' + str(i), numOfSlots=numOfSlots, numOfCoresPerSlot=args.cores)
         myCluster.nodes.append(nod)
 
-#myCluster.printClusterDetails() # print num of components per node
-myCluster.printClusterDetails(True) # print all ids of cluster
+myCluster.printClusterDetails() # print num of components per node
+#myCluster.printClusterDetails(True) # print all ids of cluster
 
 if args.nooversubscribe:
     printer.doprint('No oversubscription requested!')
@@ -111,7 +115,7 @@ myRanker = sorter.Sorter(rankmode, printer)
 printer.doprint('Initiating ' + str(args.procs) + ' processes')
 mapIds = myMapper.doMapping(myCluster, args.procs, ppr)
 
-print(mapIds)
+#print(mapIds)
 
 finalIds = myRanker.compare(mapIds)
 

@@ -1,0 +1,3 @@
+rank 0=aa slot=1:0-2
+rank 1=bb slot=0:0,1
+rank 2=cc slot=1-2
